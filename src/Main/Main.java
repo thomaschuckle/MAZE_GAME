@@ -134,11 +134,13 @@ public class Main {
         JPanel actionButtonsPanel = new JPanel();
         actionButtonsPanel.setLayout(new FlowLayout());
 
-        JButton startButton = new JButton("Start");
-        JButton stopButton = new JButton("Stop");
+        JButton endTurnButton = new JButton("End Turn");
+        JButton useWandButton = new JButton("Use Wand");
+        JButton viewCardButton = new JButton("Use Card");
 
-        actionButtonsPanel.add(startButton);
-        actionButtonsPanel.add(stopButton);
+        actionButtonsPanel.add(endTurnButton);
+        actionButtonsPanel.add(useWandButton);
+        actionButtonsPanel.add(viewCardButton);
 
         return actionButtonsPanel;
     }
