@@ -9,8 +9,8 @@ public class UIPrototype {
     // 30 part will be info panels.
     private final int[] topPanelDim = {1000, 30};
     private final int[] pInfoDim = {300, 300};
-    private final int[] chatDim = {300, 300};
-    private final int[] buttonsPanelDim = {300, 70};
+    private final int[] chatDim = {300, 200};
+    private final int[] buttonsPanelDim = {300, 170};
     
     // 70 part will be maze.
     private final int[] mazeAreaDim = {700, 700};
@@ -21,7 +21,7 @@ public class UIPrototype {
     private final int[] mazeDim = {500, 500};
     private final int[] posDim = {55, 55};
     private final int[] arrowButtonDim = {15, 15};
-    private final int[] actionButtonDim = {40, 40};
+    private final int[] actionButtonDim = {100, 40};
 
     // Getters for the dimensions
     public int[] getMaxDim() {

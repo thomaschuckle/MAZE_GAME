@@ -11,9 +11,9 @@ public class Main {
 	    JFrame frame = createMainFrame(uiPrototype); // Create the main frame
 	    frame.setJMenuBar(createMenuBar()); // Add the menu bar
 
-	    // Create a split pane layout (30/70 proportion)
+	    // Create a split pane layout (15/85 proportion)
 	    JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-	    splitPane.setResizeWeight(0.33);  // 33% for the left panel, 70% for the right panel
+	    splitPane.setResizeWeight(0.15);  // 35% for the left panel, 70% for the right panel
 	    splitPane.setEnabled(false);     // Disable manual resizing of the split
 
 	    // Add left (user info + chat) and right (maze) panels to the split pane
@@ -72,8 +72,7 @@ public class Main {
         leftPanel.add(createChatPanel(uiPrototype));
 
         // Add action buttons panel at the bottom
-        leftPanel.add(createActionButtonsPanel());
-
+        leftPanel.add(createActionButtonsPanel(uiPrototype));
         return leftPanel;
     }
 
@@ -130,25 +129,85 @@ public class Main {
     }
 
     // Action buttons panel (optional for your game, but you can add controls here)
-    private static JPanel createActionButtonsPanel() {
-        JPanel actionButtonsPanel = new JPanel();
-        actionButtonsPanel.setLayout(new FlowLayout());
+    private static JPanel createActionButtonsPanel(UIPrototype uiPrototype) {
+        // Outer panel to hold the split pane with GridLayout
+        JPanel actionButtonsPanel = new JPanel(new GridLayout(1, 1)); // 1 row, 1 column
+        actionButtonsPanel.setBorder(BorderFactory.createTitledBorder("Actions"));
 
+        // Create the 60% panel with BoxLayout for the main buttons
+        JPanel buttonsPanel = new JPanel();
+        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS)); // Vertical layout
+
+        // Dimension for the buttons
+        Dimension buttonSize = new Dimension(uiPrototype.getActionButtonDim()[0], uiPrototype.getActionButtonDim()[1]);
+
+        // Create and add main buttons
         JButton endTurnButton = new JButton("End Turn");
         JButton useWandButton = new JButton("Use Wand");
-        JButton viewCardButton = new JButton("Use Card");
+        JButton viewCardButton = new JButton("View Card");
+        JButton insertTileButton = new JButton("Insert Tile");
 
-        actionButtonsPanel.add(endTurnButton);
-        actionButtonsPanel.add(useWandButton);
-        actionButtonsPanel.add(viewCardButton);
+        // Set preferred size for the main buttons
+        setButtonSize(endTurnButton, buttonSize);
+        setButtonSize(useWandButton, buttonSize);
+        setButtonSize(viewCardButton, buttonSize);
+        setButtonSize(insertTileButton, buttonSize);
+
+        // Add buttons to the main buttons panel
+        buttonsPanel.add(endTurnButton);
+        buttonsPanel.add(useWandButton);
+        buttonsPanel.add(viewCardButton);
+        buttonsPanel.add(insertTileButton);
+
+        // Add vertical glue to push buttons to the top if needed
+        buttonsPanel.add(Box.createVerticalGlue());
+
+        // Create the 40% panel with BoxLayout for additional buttons
+        JPanel moveButtonsPanel = new JPanel();
+        moveButtonsPanel.setLayout(new BoxLayout(moveButtonsPanel, BoxLayout.Y_AXIS)); // Vertical layout
+
+        // Create and add additional buttons
+        JButton upButton = new JButton("^");
+        JButton downButton = new JButton("v");
+        JButton leftButton = new JButton("<");
+        JButton rightButton = new JButton(">");
+
+        // Set preferred size for the additional buttons
+        setButtonSize(upButton, buttonSize);
+        setButtonSize(downButton, buttonSize);
+        setButtonSize(leftButton, buttonSize);
+        setButtonSize(rightButton, buttonSize);
+
+        moveButtonsPanel.add(upButton);
+        moveButtonsPanel.add(downButton);
+        moveButtonsPanel.add(leftButton);
+        moveButtonsPanel.add(rightButton);
+
+        // Add vertical glue to push buttons to the top if needed
+        moveButtonsPanel.add(Box.createVerticalGlue());
+
+        // Create a JSplitPane to split the buttonsPanel and additionalButtonsPanel
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, buttonsPanel, moveButtonsPanel);
+        splitPane.setDividerLocation(0.6); // Maintain 60/40 ratio
+        splitPane.setResizeWeight(0.6); // Maintain 60/40 ratio when resizing
+
+        // Add the split pane to the actionButtonsPanel
+        actionButtonsPanel.add(splitPane);
 
         return actionButtonsPanel;
     }
 
+    private static void setButtonSize(JButton button, Dimension size) {
+        button.setMinimumSize(size);
+        button.setMaximumSize(size);
+        button.setPreferredSize(size);
+    }
+
+
     private static JPanel createMazePanel(UIPrototype uiPrototype) {
         // Create the main container panel with a fixed size of 700x700
         JPanel mazeContainerPanel = new JPanel(new GridBagLayout());  // Use GridBagLayout to center components
-        mazeContainerPanel.setPreferredSize(new Dimension(700, 700)); // 700x700 container
+        mazeContainerPanel.setPreferredSize(new Dimension(uiPrototype.getMazeAreaDim()[0], uiPrototype.getMazeAreaDim()[1])); // 700x700 container
         mazeContainerPanel.setBorder(BorderFactory.createTitledBorder("Maze"));
 
         // Create the actual maze panel with a size of 400x400
@@ -157,10 +216,10 @@ public class Main {
         mazePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK)); // Optional border for the maze
 
         // Populate the maze with buttons (or any components)
-        for (int i = 0; i < 7 * 7; i++) {
-            JButton mazeButton = new JButton();
-            mazeButton.setFocusable(false);
-            mazePanel.add(mazeButton);
+        for (int i = 0; i < (7 * 7); i++) {
+            JPanel tilePanel = new JPanel(new GridLayout(1, 1));
+            tilePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            mazePanel.add(tilePanel);
         }
 
         // Use GridBagConstraints to center the maze panel
