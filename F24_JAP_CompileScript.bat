@@ -9,33 +9,18 @@ CLS
 
 :: LOCAL VARIABLES ....................................................
 
-:: Some of the below variables will need to be changed.
-:: Remember to always use RELATIVE paths.
-
-:: If your code needs no external libraries, remove all references to LIBDIR
-:: and modulepath in this script.
-
-:: You will also need to change MAINCLASSSRC (main class src) to point to
-:: the file that contains main(), and MAINCLASSBIN (main class bin) needs to
-:: point to the full class name of that class.  This means fullpackage.classname
-
-:: Finally, recall that this file must end in .bat.  It has been renamed to .txt
-:: to make it easier for you to edit.
-
-:: As always, ask your lab prof if you have any questions or issues.
-
-SET LIBDIR=lib
+SET LIBDIR=Assets
 SET SRCDIR=src
 SET BINDIR=bin
 SET BINERR=labs-javac.err
-SET JARNAME=JAPLabsSwing.jar
+SET JARNAME=MazeGame.jar
 SET JAROUT=labs-jar.out
 SET JARERR=labs-jar.err
 SET DOCDIR=doc
-SET DOCPACK=CST8221
+SET DOCPACK=Main
 SET DOCERR=labs-javadoc.err
-SET MAINCLASSSRC=src/CST8221/Main.java
-SET MAINCLASSBIN=CST8221.Main
+SET MAINCLASSSRC=src/Main/Main.java 
+SET MAINCLASSBIN=Main.Main
 
 @echo off
 
@@ -60,7 +45,7 @@ ECHO "@   (((                      ((                                     @"
 ECHO "@    ((((((((((((((((((((() ))                                      @"
 ECHO "@         ((((((((((((((((()                                        @"
 ECHO "@                                                                   @"
-ECHO "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+ECHO "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" 
 
 ECHO "[LABS SCRIPT ---------------------]"
 
@@ -68,14 +53,14 @@ ECHO "1. Compiling ......................"
 javac -Xlint -cp ".;%SRCDIR%;%LIBDIR%/*" %MAINCLASSSRC% -d %BINDIR% 2> %BINERR%
 
 ECHO "2. Creating Jar ..................."
-cd bin
+cd %BINDIR%
 jar cvfe %JARNAME% %MAINCLASSBIN% . > ../%JAROUT% 2> ../%JARERR%
 
 ECHO "3. Creating Javadoc ..............."
 cd ..
 javadoc -cp ".;%BINDIR%;../%LIBDIR%/*" --module-path "%LIBDIR%" -d %DOCDIR% -sourcepath %SRCDIR% -subpackages %DOCPACK% 2> %DOCERR%
 
-cd bin
+cd %BINDIR%
 ECHO "4. Running Jar ...................."
 start java --module-path "../%LIBDIR%" -jar %JARNAME%
 cd ..
