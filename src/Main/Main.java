@@ -2,7 +2,7 @@ package Main;
 
 import java.awt.*;
 import javax.swing.*;
-import ui.UIPrototype;
+import ui.*;
 
 public class Main {
 	public static void main(String[] args) {
@@ -87,16 +87,46 @@ public class Main {
         labelsPanel.setLayout(new BoxLayout(labelsPanel, BoxLayout.Y_AXIS)); // Vertical layout for labels
 
         // Create labels for user information
-        JLabel usernameLabel = new JLabel("Username: Player1");
-        JLabel scoreLabel = new JLabel("Score: 100");
+        JLabel userTurnLabel = new JLabel("PLAYER 1's TURN");
+        userTurnLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        labelsPanel.add(userTurnLabel);
+        
+        JLabel instructionLabel = new JLabel("Click arrow in maze to insert block");
+        instructionLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        labelsPanel.add(instructionLabel);
+        
+        labelsPanel.add(new JLabel("\n"));
+        
+        for (int i=0; i<4; i++) {
+        	JLabel userLabel = new JLabel("P" + i+1 + "0 pts | ////");
+            userLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+            labelsPanel.add(userLabel);
+        }
+        
+        labelsPanel.add(new JLabel("\n"));
 
-        // Align components to the left
-        usernameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        scoreLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JLabel currentBlockLabel = new JLabel("Current Block: ");
+        currentBlockLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        labelsPanel.add(currentBlockLabel);
+        
+        labelsPanel.add(new JLabel("\n"));
+        
+        Dimension buttonSize = new Dimension(uiPrototype.getActionButtonDim()[0], uiPrototype.getActionButtonDim()[1]); // Define uniform size for buttons
 
-        // Add the labels to the inner panel
-        labelsPanel.add(usernameLabel);
-        labelsPanel.add(scoreLabel);
+        JButton leftTurnButton = new JButton("Rotate Left");
+        setButtonSize(leftTurnButton, buttonSize);
+        labelsPanel.add(leftTurnButton);
+        
+        JButton rightTurnButton = new JButton("Rotate Right");
+        setButtonSize(rightTurnButton, buttonSize);
+        labelsPanel.add(rightTurnButton);
+        
+        labelsPanel.add(new JLabel("\n"));
+        
+        JLabel currentPosLabel = new JLabel("Current position to capture: ");
+        currentBlockLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        labelsPanel.add(currentPosLabel);
+
 
         // Add glue to push the labels up if necessary
         labelsPanel.add(Box.createVerticalGlue());
@@ -203,35 +233,60 @@ public class Main {
         button.setPreferredSize(size);
     }
 
-
     private static JPanel createMazePanel(UIPrototype uiPrototype) {
-        // Create the main container panel with a fixed size of 700x700
-        JPanel mazeContainerPanel = new JPanel(new GridBagLayout());  // Use GridBagLayout to center components
-        mazeContainerPanel.setPreferredSize(new Dimension(uiPrototype.getMazeAreaDim()[0], uiPrototype.getMazeAreaDim()[1])); // 700x700 container
+        // Create the main container panel with GridBagLayout for flexible layout
+        JPanel mazeContainerPanel = new JPanel(new GridBagLayout());
+        mazeContainerPanel.setPreferredSize(new Dimension(uiPrototype.getMazeAreaDim()[0], uiPrototype.getMazeAreaDim()[1]));
         mazeContainerPanel.setBorder(BorderFactory.createTitledBorder("Maze"));
 
-        // Create the actual maze panel with a size of 400x400
-        JPanel mazePanel = new JPanel(new GridLayout(7, 7)); // 7x7 maze
-        mazePanel.setPreferredSize(new Dimension(uiPrototype.getMazeDim()[0], uiPrototype.getMazeDim()[1])); // 400x400 maze
-        mazePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK)); // Optional border for the maze
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(1, 1, 1, 1); // Add some padding between tiles and buttons
+        gbc.fill = GridBagConstraints.BOTH;
 
-        // Populate the maze with buttons (or any components)
-        for (int i = 0; i < (7 * 7); i++) {
-            JPanel tilePanel = new JPanel(new GridLayout(1, 1));
-            tilePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-            mazePanel.add(tilePanel);
+        // Define the size for each tile to be a perfect square
+        int tileSize = Math.min(uiPrototype.getMazeDim()[0] / 7, uiPrototype.getMazeDim()[1] / 7); // Calculate the size based on available space
+
+        // Add tiles (7x7 grid for the maze) using Tile objects
+        for (int row = 0; row < 7; row++) {
+            for (int col = 0; col < 7; col++) {
+                // Load image for this tile if necessary, else pass null (implement your own logic for loading images)
+                Image tileImage = null;
+
+                // Create a Tile object for each grid cell
+                Tile tile = new Tile(row, col, tileImage);
+                tile.getPanel().setPreferredSize(new Dimension(tileSize, tileSize)); // Set the preferred size for each tile
+                
+                gbc.gridx = col + 1; // Adjust x to leave space for buttons on the sides
+                gbc.gridy = row + 1; // Adjust y to leave space for buttons on top and bottom
+
+                mazeContainerPanel.add(tile.getPanel(), gbc); // Add the tile's JPanel to the grid
+            }
         }
 
-        // Use GridBagConstraints to center the maze panel
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(0, 0, 0, 0); // No insets (optional)
-        gbc.anchor = GridBagConstraints.CENTER; // Center the maze within the container
+        // Add top and bottom buttons in the container panel
+        for (int col = 1; col < 7; col += 2) { // Buttons for even columns
+            JButton topButton = new JButton("v");
+            gbc.gridx = col + 1; // Align with grid columns
+            gbc.gridy = 0; // Above the grid
+            mazeContainerPanel.add(topButton, gbc);
 
-        // Add the maze panel to the main container panel
-        mazeContainerPanel.add(mazePanel, gbc);
+            JButton bottomButton = new JButton("^");
+            gbc.gridy = 8; // Below the grid
+            mazeContainerPanel.add(bottomButton, gbc);
+        }
 
-        return mazeContainerPanel; // Return the main container panel
+        // Add left and right buttons in the container panel
+        for (int row = 1; row < 7; row += 2) { // Buttons for odd rows
+            JButton leftButton = new JButton(">");
+            gbc.gridx = 0; // Left of the grid
+            gbc.gridy = row + 1; // Align with grid rows
+            mazeContainerPanel.add(leftButton, gbc);
+
+            JButton rightButton = new JButton("<");
+            gbc.gridx = 8; // Right of the grid
+            mazeContainerPanel.add(rightButton, gbc);
+        }
+
+        return mazeContainerPanel;  // Return the main container panel with maze and buttons
     }
 }

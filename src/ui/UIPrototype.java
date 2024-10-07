@@ -20,8 +20,7 @@ public class UIPrototype {
     private final int[] logoDim = {300, 50};
     private final int[] mazeDim = {500, 500};
     private final int[] posDim = {55, 55};
-    private final int[] arrowButtonDim = {15, 15};
-    private final int[] actionButtonDim = {100, 40};
+    private final int[] actionButtonDim = {120, 40};
 
     // Getters for the dimensions
     public int[] getMaxDim() {
@@ -58,10 +57,6 @@ public class UIPrototype {
 
     public int[] getPosDim() {
         return posDim;
-    }
-
-    public int[] getArrowButtonDim() {
-        return arrowButtonDim;
     }
 
     public int[] getActionButtonDim() {
