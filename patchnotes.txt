@@ -1,9 +1,9 @@
-- changed background of the maze
-- swapped color of the panels (looks better)
-- modified the arrow buttons position (removed some)
-- arrow buttons to insert tiles size changed, now matches the dimension of the tiles in the maze.
-- action buttons panel layout changed, added more buttons (more functionalities, previously was missing)
-- chat panel size changed to 300x200 (fit screen more)
-- action buttons panel size changed to 300x170 (fit screen more)
-- maze size changed to 525x525 (better looking)
-- action buttons size changed to 120x40 (previously too small)
+- changed background of the maze (got a better looking one).
+- swapped color of the panels (looks better).
+- modified the arrow buttons position (removed some).
+- arrow buttons to insert tiles size changed to 75x25 for horizontal buttons, 25x75 for vertical buttons (now matches the dimension of the tiles in the maze).
+- action buttons panel layout changed, added more buttons (more functionalities, previously was missing).
+- chat panel size changed to 300x200 (fit screen more).
+- action buttons panel size changed to 300x170 (fit screen more).
+- maze size changed to 525x525 (better looking).
+- action buttons size changed to 120x40 (previously too small).
