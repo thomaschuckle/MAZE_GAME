@@ -90,53 +90,64 @@ public class Main {
         JLabel userTurnLabel = new JLabel("PLAYER 1's TURN");
         userTurnLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         labelsPanel.add(userTurnLabel);
-        
+
         JLabel instructionLabel = new JLabel("Click arrow in maze to insert block");
         instructionLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         labelsPanel.add(instructionLabel);
-        
-        labelsPanel.add(new JLabel("\n"));
-        
-        for (int i=0; i<4; i++) {
-        	JLabel userLabel = new JLabel("P" + i+1 + "0 pts | ////");
+
+        labelsPanel.add(Box.createVerticalStrut(10)); // Add vertical space
+
+        for (int i = 0; i < 4; i++) {
+            JLabel userLabel = new JLabel("P" + (i + 1) + ": 0 pts | ////");
             userLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
             labelsPanel.add(userLabel);
         }
+
+        labelsPanel.add(Box.createVerticalStrut(10)); // Add vertical space
         
-        labelsPanel.add(new JLabel("\n"));
+        JLabel currentPosLabel = new JLabel("Current position to capture: ");
+        currentPosLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        labelsPanel.add(currentPosLabel);
+        
+        labelsPanel.add(Box.createVerticalStrut(40)); // Add vertical space
+
+        // Create a new panel for the current block and controls
+        JPanel labelsPanel2 = new JPanel(new FlowLayout(FlowLayout.LEFT)); // FlowLayout for horizontal alignment
 
         JLabel currentBlockLabel = new JLabel("Current Block: ");
         currentBlockLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        labelsPanel.add(currentBlockLabel);
-        
-        labelsPanel.add(new JLabel("\n"));
-        
-        Dimension buttonSize = new Dimension(uiPrototype.getActionButtonDim()[0], uiPrototype.getActionButtonDim()[1]); // Define uniform size for buttons
+        labelsPanel2.add(currentBlockLabel);
 
-        JButton leftTurnButton = new JButton("Rotate Left");
+        // Create a 1x1 square for the current block
+        JPanel currentBlock = new JPanel();
+        currentBlock.setPreferredSize(new Dimension(60, 60)); // Set size for the block
+        currentBlock.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        labelsPanel2.add(currentBlock); // Add the square after the label
+
+        labelsPanel2.add(Box.createHorizontalStrut(10)); // Add horizontal space between the block and buttons
+
+        // Button panel with FlowLayout for horizontal alignment
+        Dimension buttonSize = new Dimension(50, 20); // Define uniform size for buttons
+
+        JButton leftTurnButton = new JButton("<-");
         setButtonSize(leftTurnButton, buttonSize);
-        labelsPanel.add(leftTurnButton);
-        
-        JButton rightTurnButton = new JButton("Rotate Right");
-        setButtonSize(rightTurnButton, buttonSize);
-        labelsPanel.add(rightTurnButton);
-        
-        labelsPanel.add(new JLabel("\n"));
-        
-        JLabel currentPosLabel = new JLabel("Current position to capture: ");
-        currentBlockLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        labelsPanel.add(currentPosLabel);
+        labelsPanel2.add(leftTurnButton); // Add the left button
 
+        JButton rightTurnButton = new JButton("->");
+        setButtonSize(rightTurnButton, buttonSize);
+        labelsPanel2.add(rightTurnButton); // Add the right button
+
+        // Add the new labelsPanel2 to the userInfoPanel
+        userInfoPanel.add(labelsPanel, BorderLayout.NORTH); // Add labelsPanel to the top
+        userInfoPanel.add(labelsPanel2, BorderLayout.CENTER); // Add labelsPanel2 to the center
 
         // Add glue to push the labels up if necessary
         labelsPanel.add(Box.createVerticalGlue());
 
-        // Add the inner panel (with labels) to the center of the outer panel
-        userInfoPanel.add(labelsPanel, BorderLayout.CENTER);
-
         return userInfoPanel;
     }
 
+    
     private static JPanel createChatPanel(UIPrototype uiPrototype) {
         JPanel chatPanel = new JPanel(new BorderLayout());
         chatPanel.setBorder(BorderFactory.createTitledBorder("Chat"));
