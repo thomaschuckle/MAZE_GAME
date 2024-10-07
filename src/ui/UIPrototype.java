@@ -18,7 +18,7 @@ public class UIPrototype {
     
     // Inside maze area.
     private final int[] logoDim = {300, 50};
-    private final int[] mazeDim = {500, 500};
+    private final int[] mazeDim = {525, 525};
     private final int[] posDim = {55, 55};
     private final int[] actionButtonDim = {120, 40};
 
