@@ -7,27 +7,51 @@ import java.util.stream.Collectors;
 
 public class ScoreManager {
     
-    private Map<String, Player> players; // A map to store players by their user names
+    // Fields ---------------------------------------------------------------------------------------
+
+    private Map<String, Player> players;               // A map to store players by their usernames
     
-    // Constructor
+    // Constructors ---------------------------------------------------------------------------------
+
+    /**
+     * Initializes the ScoreManager with an empty player map.
+     */
     public ScoreManager() {
         this.players = new HashMap<>();
     }
 
-    // Add a player to the score manager with an initial score
+    // Player Management ----------------------------------------------------------------------------
+
+    /**
+     * Adds a player to the score manager with an initial score.
+     *
+     * @param player The Player object to add.
+     */
     public void addPlayer(Player player) {
         if (!players.containsKey(player.getUsername())) {
             players.put(player.getUsername(), player);
         }
     }
 
-    // Get the score of a specific player by user name
+    // Score Management -----------------------------------------------------------------------------
+
+    /**
+     * Retrieves the score of a specific player by username.
+     *
+     * @param username The username of the player.
+     * @return The score of the player, or 0 if the player is not found.
+     */
     public int getScore(String username) {
         Player player = players.get(username);
-        return player != null ? player.getScore() : 0;  // Returns 0 if the player is not found
+        return player != null ? player.getScore() : 0;
     }
 
-    // Set the score for a specific player (called by controller to update scores)
+    /**
+     * Sets the score for a specific player. Called by controller to update scores.
+     *
+     * @param username The username of the player.
+     * @param score The new score to set for the player.
+     */
     public void setScore(String username, int score) {
         Player player = players.get(username);
         if (player != null) {
@@ -35,7 +59,12 @@ public class ScoreManager {
         }
     }
 
-    // Increase the score of a specific player by a specified amount (called by controller)
+    /**
+     * Increases the score of a specific player by a specified amount. Called by controller.
+     *
+     * @param username The username of the player.
+     * @param amount The amount to increase the player's score by.
+     */
     public void increaseScore(String username, int amount) {
         Player player = players.get(username);
         if (player != null) {
@@ -44,7 +73,12 @@ public class ScoreManager {
         }
     }
 
-    // Decrease the score of a specific player by a specified amount (called by controller)
+    /**
+     * Decreases the score of a specific player by a specified amount. Called by controller.
+     *
+     * @param username The username of the player.
+     * @param amount The amount to decrease the player's score by.
+     */
     public void decreaseScore(String username, int amount) {
         Player player = players.get(username);
         if (player != null) {
@@ -53,14 +87,22 @@ public class ScoreManager {
         }
     }
 
-    // Reset the scores of all players (e.g., when starting a new game)
+    /**
+     * Resets the scores of all players, typically used when starting a new game.
+     */
     public void resetScores() {
         for (Player player : players.values()) {
             player.setScore(0);  // Reset all players' scores to 0
         }
     }
 
-    // Get the score of all players (returns a map of user name to score)
+    // Score Retrieval ------------------------------------------------------------------------------
+
+    /**
+     * Retrieves the scores of all players.
+     *
+     * @return A map of usernames to their respective scores.
+     */
     public Map<String, Integer> getAllScores() {
         Map<String, Integer> allScores = new HashMap<>();
         for (Map.Entry<String, Player> entry : players.entrySet()) {
@@ -69,7 +111,11 @@ public class ScoreManager {
         return allScores;
     }
     
-    // Get the leader board (returns players sorted by their score, highest to lowest)
+    /**
+     * Retrieves the leaderboard, with players sorted by their scores in descending order.
+     *
+     * @return A map of usernames to their scores, sorted from highest to lowest.
+     */
     public Map<String, Integer> getLeaderboard() {
         Map<String, Integer> leaderboard = new HashMap<>();
         for (Map.Entry<String, Player> entry : players.entrySet()) {
@@ -79,5 +125,22 @@ public class ScoreManager {
                                   .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue()))  // Sort in descending order
                                   .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
         return leaderboard;
+    }
+    
+    /**
+     * Retrieves the player with the highest score.
+     *
+     * @return The Player object with the highest score, or null if there are no players.
+     */
+    public Player getWinner() {
+        int maxScore = players.values().stream()
+                              .mapToInt(Player::getScore)
+                              .max()
+                              .orElse(-1);
+
+        return players.values().stream()
+                      .filter(player -> player.getScore() == maxScore)
+                      .findFirst()
+                      .orElse(null);
     }
 }
