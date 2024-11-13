@@ -4,130 +4,257 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JToggleButton; // Import JToggleButton
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.border.TitledBorder;
 
+import javax.swing.SwingUtilities;
+
 public class ControlPanel extends JPanel {
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	// Creating action buttons panel
-    public JPanel createActionButtonsPanel(UIPrototype uiPrototype) {
-    	JPanel actionButtonsPanel = new JPanel(new GridLayout(1, 1)); // 1 row, 1 column
-    	actionButtonsPanel.setBorder(BorderFactory.createTitledBorder(
-    	        BorderFactory.createLineBorder(Color.WHITE), // Border line color
-    	        "Actions", // Title text
-    	        TitledBorder.LEFT, // Title position
-    	        TitledBorder.TOP, // Title position
-    	        new Font("Arial", Font.BOLD, 14), // Title font
-    	        Color.decode("#ffffff") // Title color (white)
-    	));
-    	actionButtonsPanel.setBackground(Color.decode("#803925")); // Set background color
+    // Define buttons to be used by the controller
+    private JButton endTurnButton;
+    private JToggleButton useWandButton; // Changed to JToggleButton
+    private JButton insertTileButton; // Changed to JToggleButton
+    private JButton viewCardButton;
+    private JButton upButton;
+    private JButton downButton;
+    private JButton leftButton;
+    private JButton rightButton;
 
-        // Create the 60% panel with BoxLayout for the main buttons
+    // Default colors for the buttons
+    private Color mainButtonColor = Color.decode("#848484"); // Updated color
+    private Color moveButtonColor = Color.decode("#848484"); // Updated color
+    private Color buttonTextColor = Color.BLACK;
+
+    public ControlPanel(UIPrototype uiPrototype) {
+        // Initialize buttons when the panel is created
+        endTurnButton = createButton("End Turn", mainButtonColor);
+        useWandButton = createToggleButton("Use Wand", mainButtonColor); // Use toggle button
+        insertTileButton = createButton("Insert Tile", mainButtonColor); // Use toggle button
+        viewCardButton = createButton("View Card", mainButtonColor);
+
+        upButton = createButton("^", moveButtonColor);
+        downButton = createButton("v", moveButtonColor);
+        leftButton = createButton("<", moveButtonColor);
+        rightButton = createButton(">", moveButtonColor);
+
+        // Set up layout and initialize the panel
+        setLayout(new GridLayout(1, 1));
+        setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(Color.WHITE), 
+                "Actions", 
+                TitledBorder.LEFT, 
+                TitledBorder.TOP, 
+                new Font("Arial", Font.BOLD, 14), 
+                Color.decode("#ffffff")
+        ));
+        setBackground(Color.decode("#803925"));
+        
+        // Create and add buttons panel
+        JPanel actionButtonsPanel = createActionButtonsPanel(uiPrototype);
+        add(actionButtonsPanel);
+    }
+
+    // Create a regular button with a specific label and background color
+    private JButton createButton(String text, Color backgroundColor) {
+        JButton button = new JButton(text);
+        button.setBackground(backgroundColor);
+        button.setForeground(buttonTextColor); // Set text color
+        return button;
+    }
+
+    // Create a toggle button with a specific label and background color
+    private JToggleButton createToggleButton(String text, Color backgroundColor) {
+        JToggleButton toggleButton = new JToggleButton(text);
+        toggleButton.setBackground(backgroundColor);
+        toggleButton.setForeground(buttonTextColor); // Set text color
+        return toggleButton;
+    }
+
+    private JPanel createActionButtonsPanel(UIPrototype uiPrototype) {
+        JPanel actionButtonsPanel = new JPanel(new GridLayout(1, 1));
+        actionButtonsPanel.setBackground(Color.decode("#803925"));
+
+        // Create the main buttons panel (60% of the width)
         JPanel buttonsPanel = new JPanel();
-        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS)); // Vertical layout
-        buttonsPanel.setBackground(Color.decode("#803925")); // Set background color for the main buttons panel
+        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
+        buttonsPanel.setBackground(Color.decode("#803925"));
 
-        // Dimension for the buttons
         Dimension buttonSize = new Dimension(uiPrototype.getActionButtonDim()[0], uiPrototype.getActionButtonDim()[1]);
-
-        // Create and add main buttons
-        JButton endTurnButton = new JButton("End Turn");
-        JButton useWandButton = new JButton("Use Wand");
-        JButton viewCardButton = new JButton("View Card");
-        JButton insertTileButton = new JButton("Insert Tile");
-
-        // Set preferred size for the main buttons
         setButtonSize(endTurnButton, buttonSize);
-        setButtonSize(useWandButton, buttonSize);
-        setButtonSize(viewCardButton, buttonSize);
+        setToggleButtonSize(useWandButton, buttonSize);
         setButtonSize(insertTileButton, buttonSize);
+        setButtonSize(viewCardButton, buttonSize);
 
-        // Set button colors
-        endTurnButton.setBackground(Color.decode("#848484")); // Set background color for "End Turn" button
-        endTurnButton.setForeground(Color.decode("#000000")); // Set text color
-
-        useWandButton.setBackground(Color.decode("#848484")); // Set background color for "Use Wand" button
-        useWandButton.setForeground(Color.decode("#000000")); // Set text color
-
-        viewCardButton.setBackground(Color.decode("#848484")); // Set background color for "View Card" button
-        viewCardButton.setForeground(Color.decode("#000000")); // Set text color
-
-        insertTileButton.setBackground(Color.decode("#848484")); // Set background color for "Insert Tile" button
-        insertTileButton.setForeground(Color.decode("#000000")); // Set text color
-
-        // Add buttons to the main buttons panel
         buttonsPanel.add(endTurnButton);
         buttonsPanel.add(useWandButton);
-        buttonsPanel.add(viewCardButton);
         buttonsPanel.add(insertTileButton);
+        buttonsPanel.add(viewCardButton);
 
-        // Add vertical glue to push buttons to the top if needed
-        buttonsPanel.add(Box.createVerticalGlue());
-
-        // Create the 40% panel with BoxLayout for additional buttons
+        // Create the move buttons panel (40% of the width)
         JPanel moveButtonsPanel = new JPanel();
-        moveButtonsPanel.setLayout(new BoxLayout(moveButtonsPanel, BoxLayout.Y_AXIS)); // Vertical layout
-        moveButtonsPanel.setBackground(Color.decode("#803925")); // Set background color for the move buttons panel
+        moveButtonsPanel.setLayout(new BoxLayout(moveButtonsPanel, BoxLayout.Y_AXIS));
+        moveButtonsPanel.setBackground(Color.decode("#803925"));
 
-        // Create and add additional buttons
-        JButton upButton = new JButton("^");
-        JButton downButton = new JButton("v");
-        JButton leftButton = new JButton("<");
-        JButton rightButton = new JButton(">");
-
-        // Set preferred size for the additional buttons
         setButtonSize(upButton, buttonSize);
         setButtonSize(downButton, buttonSize);
         setButtonSize(leftButton, buttonSize);
         setButtonSize(rightButton, buttonSize);
 
-        // Set colors for additional buttons
-        upButton.setBackground(Color.decode("#848484")); // Set background color for up button
-        upButton.setForeground(Color.decode("#000000")); // Set text color
-
-        downButton.setBackground(Color.decode("#848484")); // Set background color for down button
-        downButton.setForeground(Color.decode("#000000")); // Set text color
-
-        leftButton.setBackground(Color.decode("#848484")); // Set background color for left button
-        leftButton.setForeground(Color.decode("#000000")); // Set text color
-
-        rightButton.setBackground(Color.decode("#848484")); // Set background color for right button
-        rightButton.setForeground(Color.decode("#000000")); // Set text color
-
-        // Add buttons to the move buttons panel
         moveButtonsPanel.add(upButton);
         moveButtonsPanel.add(downButton);
         moveButtonsPanel.add(leftButton);
         moveButtonsPanel.add(rightButton);
 
-        // Add vertical glue to push buttons to the top if needed
-        moveButtonsPanel.add(Box.createVerticalGlue());
-
-        // Create a JSplitPane to split the buttonsPanel and moveButtonsPanel
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, buttonsPanel, moveButtonsPanel);
-        splitPane.setDividerLocation(0.6); // Maintain 60/40 ratio
-        splitPane.setResizeWeight(0.6); // Maintain 60/40 ratio when resizing
-
-        // Add the split pane to the actionButtonsPanel
+        splitPane.setDividerLocation(0.6);
+        splitPane.setResizeWeight(0.6);
+        
         actionButtonsPanel.add(splitPane);
-
         return actionButtonsPanel;
     }
-    
-    // Helper method for setting button size
-    private static void setButtonSize(JButton button, Dimension size) {
+
+    // Method for setting the button size
+    private void setButtonSize(JButton button, Dimension size) {
         button.setMinimumSize(size);
         button.setMaximumSize(size);
         button.setPreferredSize(size);
+    }
+    
+    private void setToggleButtonSize(JToggleButton button, Dimension size) {
+        button.setMinimumSize(size);
+        button.setMaximumSize(size);
+        button.setPreferredSize(size);
+    }
+
+    // Update method to refresh the panel when button colors change
+    public void updatePanel() {
+        SwingUtilities.invokeLater(() -> {
+            // Apply colors to the buttons
+            endTurnButton.setBackground(mainButtonColor);
+            useWandButton.setBackground(mainButtonColor);
+            insertTileButton.setBackground(mainButtonColor);
+            viewCardButton.setBackground(mainButtonColor);
+
+            upButton.setBackground(moveButtonColor);
+            downButton.setBackground(moveButtonColor);
+            leftButton.setBackground(moveButtonColor);
+            rightButton.setBackground(moveButtonColor);
+
+            // Set the text color for all buttons
+            endTurnButton.setForeground(buttonTextColor);
+            useWandButton.setForeground(buttonTextColor);
+            insertTileButton.setForeground(buttonTextColor);
+            viewCardButton.setForeground(buttonTextColor);
+
+            upButton.setForeground(buttonTextColor);
+            downButton.setForeground(buttonTextColor);
+            leftButton.setForeground(buttonTextColor);
+            rightButton.setForeground(buttonTextColor);
+
+            revalidate();  // Refresh the layout
+            repaint();     // Force repaint of the panel
+        });
+    }
+
+    // Getter methods for the controller to interact with buttons
+    public JButton getEndTurnButton() {
+        return endTurnButton;
+    }
+
+    public JToggleButton getUseWandButton() {
+        return useWandButton; // Return the toggle button
+    }
+
+    public JButton getInsertTileButton() {
+        return insertTileButton; // Return the toggle button
+    }
+
+    public JButton getViewCardButton() {
+        return viewCardButton;
+    }
+
+    public JButton getUpButton() {
+        return upButton;
+    }
+
+    public JButton getDownButton() {
+        return downButton;
+    }
+
+    public JButton getLeftButton() {
+        return leftButton;
+    }
+
+    public JButton getRightButton() {
+        return rightButton;
+    }
+
+    // Method for adding listeners (controller will pass the listeners)
+    public void addButtonListener(String buttonName, ActionListener listener) {
+        switch (buttonName) {
+            case "endTurn":
+                endTurnButton.addActionListener(listener);
+                break;
+            case "useWand":
+                useWandButton.addActionListener(listener);
+                break;
+            case "insertTile":
+                insertTileButton.addActionListener(listener);
+                break;
+            case "viewCard":
+                viewCardButton.addActionListener(listener);
+                break;
+            case "up":
+                upButton.addActionListener(listener);
+                break;
+            case "down":
+                downButton.addActionListener(listener);
+                break;
+            case "left":
+                leftButton.addActionListener(listener);
+                break;
+            case "right":
+                rightButton.addActionListener(listener);
+                break;
+            default:
+                break;
+        }
+    }
+
+    // Getter and setter for button color properties
+    public Color getMainButtonColor() {
+        return mainButtonColor;
+    }
+
+    public void setMainButtonColor(Color mainButtonColor) {
+        this.mainButtonColor = mainButtonColor;
+        updatePanel();
+    }
+
+    public Color getMoveButtonColor() {
+        return moveButtonColor;
+    }
+
+    public void setMoveButtonColor(Color moveButtonColor) {
+        this.moveButtonColor = moveButtonColor;
+        updatePanel();
+    }
+
+    public Color getButtonTextColor() {
+        return buttonTextColor;
+    }
+
+    public void setButtonTextColor(Color buttonTextColor) {
+        this.buttonTextColor = buttonTextColor;
+        updatePanel();
     }
 }

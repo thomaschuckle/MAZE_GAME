@@ -4,28 +4,40 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import java.util.List;
+import java.util.ArrayList;
 
-public class MenuPanel extends JPanel{
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+public class MenuPanel extends JPanel {
+    private static final long serialVersionUID = 1L;
 
-	// Creating menu bar
+    // Fields to store dynamic menu items
+    private List<JMenuItem> fileMenuItems = new ArrayList<>();
+    private List<JMenuItem> gameMenuItems = new ArrayList<>();
+    private List<JMenuItem> languageMenuItems = new ArrayList<>();
+
+    // Creating menu bar
     public JMenuBar createMenuBar() {
         JMenuBar menuBar = new JMenuBar();
+
+        // Create and populate file menu
         JMenu fileMenu = new JMenu("File");
-        fileMenu.add(new JMenuItem("Load"));
-        fileMenu.add(new JMenuItem("Save"));
+        for (JMenuItem item : fileMenuItems) {
+            fileMenu.add(item);
+        }
 
+        // Create and populate game menu
         JMenu gameMenu = new JMenu("Game");
-        gameMenu.add(new JMenuItem("Restart"));
-        gameMenu.add(new JMenuItem("About"));
+        for (JMenuItem item : gameMenuItems) {
+            gameMenu.add(item);
+        }
 
+        // Create and populate language menu
         JMenu languageMenu = new JMenu("Language");
-        languageMenu.add(new JMenuItem("English"));
-        languageMenu.add(new JMenuItem("Vietnamese"));
+        for (JMenuItem item : languageMenuItems) {
+            languageMenu.add(item);
+        }
 
+        // Add menus to the menu bar
         menuBar.add(fileMenu);
         menuBar.add(gameMenu);
         menuBar.add(languageMenu);
@@ -33,5 +45,31 @@ public class MenuPanel extends JPanel{
         menuBar.add(new JMenu("Network"));
 
         return menuBar;
+    }
+
+    // Methods to add items to different menus
+    public void addFileMenuItem(JMenuItem item) {
+        fileMenuItems.add(item);
+    }
+
+    public void addGameMenuItem(JMenuItem item) {
+        gameMenuItems.add(item);
+    }
+
+    public void addLanguageMenuItem(JMenuItem item) {
+        languageMenuItems.add(item);
+    }
+
+    // Getter methods for menu items
+    public List<JMenuItem> getFileMenuItems() {
+        return fileMenuItems;
+    }
+
+    public List<JMenuItem> getGameMenuItems() {
+        return gameMenuItems;
+    }
+
+    public List<JMenuItem> getLanguageMenuItems() {
+        return languageMenuItems;
     }
 }

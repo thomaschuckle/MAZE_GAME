@@ -14,103 +14,152 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
+import javax.swing.SwingUtilities;
+
 public class InfoPanel extends JPanel {
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	// Creating user info panel
+    // Fields to dynamically store player info and wands
+    private String[] playerUsernames = {"P1", "P2", "P3", "P4"};
+    private int[] playerScores = {0, 0, 0, 0};
+    private String[] playerWands = {"////", "////", "////", "////"};
+    private String currentPlayerTurn = "P1";
+    private String currentInstruction = "Click arrow in maze to insert block";
+    private String currentBlock = "Current Block: ";
+
+    // Labels that need to be updated dynamically
+    private JLabel userTurnLabel;
+    private JLabel instructionLabel;
+    private JLabel[] playerInfoLabels;
+    private JLabel currentBlockLabel;
+
+    // Button color fields with default colors
+    private Color leftButtonColor = Color.decode("#0b6e89");  // Default color for the left button
+    private Color rightButtonColor = Color.decode("#0b6e89"); // Default color for the right button
+    private Color buttonTextColor = Color.WHITE;              // Default text color for buttons
+
+    // Initialize the panel and labels
+    public InfoPanel() {
+        playerInfoLabels = new JLabel[playerUsernames.length];
+    }
+
     public JPanel createUserInfoPanel(UIPrototype uiPrototype) {
-    	// Outer panel with BorderLayout to control overall placement
-    	JPanel userInfoPanel = new JPanel(new BorderLayout());
+        JPanel userInfoPanel = new JPanel(new BorderLayout());
 
-    	// Create the titled border with a white title
-    	TitledBorder titledBorder = BorderFactory.createTitledBorder("User Info");
-    	titledBorder.setTitleColor(Color.decode("#d7bcac")); // Set title color
+        TitledBorder titledBorder = BorderFactory.createTitledBorder("User Info");
+        titledBorder.setTitleColor(Color.decode("#d7bcac"));
+        userInfoPanel.setBorder(titledBorder);
+        userInfoPanel.setPreferredSize(new Dimension(uiPrototype.getPInfoDim()[0], uiPrototype.getPInfoDim()[1]));
+        userInfoPanel.setBackground(Color.decode("#013743"));
 
-    	// Set the border to the userInfoPanel
-    	userInfoPanel.setBorder(titledBorder);
-    	userInfoPanel.setPreferredSize(new Dimension(uiPrototype.getPInfoDim()[0], uiPrototype.getPInfoDim()[1]));
-    	userInfoPanel.setBackground(Color.decode("#013743")); // Set the background color
-    	
-        // Inner panel with BoxLayout to stack labels vertically
         JPanel labelsPanel = new JPanel();
-        labelsPanel.setLayout(new BoxLayout(labelsPanel, BoxLayout.Y_AXIS)); // Vertical layout for labels
+        labelsPanel.setLayout(new BoxLayout(labelsPanel, BoxLayout.Y_AXIS));
         labelsPanel.setBackground(Color.decode("#013743"));
-        
-        // Create labels for user information
-        JLabel userTurnLabel = new JLabel("PLAYER 1's TURN");
+
+        userTurnLabel = new JLabel(currentPlayerTurn + "'s TURN");
         userTurnLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         userTurnLabel.setForeground(Color.decode("#fb7f05"));
         labelsPanel.add(userTurnLabel);
 
-        JLabel instructionLabel = new JLabel("Click arrow in maze to insert block");
+        instructionLabel = new JLabel(currentInstruction);
         instructionLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         instructionLabel.setForeground(Color.decode("#fb7f05"));
         labelsPanel.add(instructionLabel);
 
-        labelsPanel.add(Box.createVerticalStrut(10)); // Add vertical space
+        labelsPanel.add(Box.createVerticalStrut(10));
 
-        for (int i = 0; i < 4; i++) {
-            JLabel userLabel = new JLabel("P" + (i + 1) + ": 0 pts | ////");
-            userLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-            userLabel.setForeground(Color.decode("#f62002"));
-            labelsPanel.add(userLabel);
+        for (int i = 0; i < playerUsernames.length; i++) {
+            playerInfoLabels[i] = new JLabel(playerUsernames[i] + ": " + playerScores[i] + " | " + playerWands[i]);
+            playerInfoLabels[i].setAlignmentX(Component.LEFT_ALIGNMENT);
+            playerInfoLabels[i].setForeground(Color.decode("#f62002"));
+            labelsPanel.add(playerInfoLabels[i]);
         }
 
-        labelsPanel.add(Box.createVerticalStrut(10)); // Add vertical space
-        
+        labelsPanel.add(Box.createVerticalStrut(10));
+
         JLabel currentPosLabel = new JLabel("Current position to capture: ");
         currentPosLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         currentPosLabel.setForeground(Color.decode("#f62002"));
         labelsPanel.add(currentPosLabel);
-        
-        labelsPanel.add(Box.createVerticalStrut(40)); // Add vertical space
 
-        // Create a new panel for the current block and controls
-        JPanel labelsPanel2 = new JPanel(new FlowLayout(FlowLayout.LEFT)); // FlowLayout for horizontal alignment
+        labelsPanel.add(Box.createVerticalStrut(40));
+
+        JPanel labelsPanel2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         labelsPanel2.setBackground(Color.decode("#013743"));
-        
-        JLabel currentBlockLabel = new JLabel("Current Block: ");
+
+        currentBlockLabel = new JLabel(currentBlock);
         currentBlockLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         currentBlockLabel.setForeground(Color.decode("#ff7f00"));
         labelsPanel2.add(currentBlockLabel);
 
-        // Create a 1x1 square for the current block
-        JPanel currentBlock = new JPanel();
-        currentBlock.setPreferredSize(new Dimension(60, 60)); // Set size for the block
-        currentBlock.setBorder(BorderFactory.createLineBorder(Color.RED));
-        labelsPanel2.add(currentBlock); // Add the square after the label
+        JPanel currentBlockPanel = new JPanel();
+        currentBlockPanel.setPreferredSize(new Dimension(60, 60));
+        currentBlockPanel.setBorder(BorderFactory.createLineBorder(Color.RED));
+        labelsPanel2.add(currentBlockPanel);
 
-        labelsPanel2.add(Box.createHorizontalStrut(1)); // Add horizontal space between the block and buttons
+        labelsPanel2.add(Box.createHorizontalStrut(1));
 
-        // Button panel with FlowLayout for horizontal alignment
-        Dimension buttonSize = new Dimension(45, 20); // Define uniform size for buttons
-
+        Dimension buttonSize = new Dimension(45, 20);
         JButton leftTurnButton = new JButton("<-");
         setButtonSize(leftTurnButton, buttonSize);
-        leftTurnButton.setBackground(Color.decode("#0b6e89")); // Set background color for left button (green)
-        leftTurnButton.setForeground(Color.WHITE); // Set text color for left button
-        labelsPanel2.add(leftTurnButton); // Add the left button
+        leftTurnButton.setBackground(leftButtonColor); // Uses default color if not set
+        leftTurnButton.setForeground(buttonTextColor); // Uses default text color if not set
+        labelsPanel2.add(leftTurnButton);
 
         JButton rightTurnButton = new JButton("->");
         setButtonSize(rightTurnButton, buttonSize);
-        rightTurnButton.setBackground(Color.decode("#0b6e89")); // Set background color for right button (red)
-        rightTurnButton.setForeground(Color.WHITE); // Set text color for right button
-        labelsPanel2.add(rightTurnButton); // Add the right button
+        rightTurnButton.setBackground(rightButtonColor); // Uses default color if not set
+        rightTurnButton.setForeground(buttonTextColor); // Uses default text color if not set
+        labelsPanel2.add(rightTurnButton);
 
-        // Add the new labelsPanel2 to the userInfoPanel
-        userInfoPanel.add(labelsPanel, BorderLayout.NORTH); // Add labelsPanel to the top
-        userInfoPanel.add(labelsPanel2, BorderLayout.CENTER); // Add labelsPanel2 to the center
+        userInfoPanel.add(labelsPanel, BorderLayout.NORTH);
+        userInfoPanel.add(labelsPanel2, BorderLayout.CENTER);
 
-        // Add glue to push the labels up if necessary
         labelsPanel.add(Box.createVerticalGlue());
-        
+
         return userInfoPanel;
     }
-    
-    // Helper method for setting button size
+
+    // Method to update the panel whenever fields are changed
+    public void updatePanel() {
+        SwingUtilities.invokeLater(() -> {
+            userTurnLabel.setText(currentPlayerTurn + "'s TURN");
+            instructionLabel.setText(currentInstruction);
+
+            for (int i = 0; i < playerUsernames.length; i++) {
+                playerInfoLabels[i].setText(playerUsernames[i] + ": " + playerScores[i] + " | " + playerWands[i]);
+            }
+
+            currentBlockLabel.setText(currentBlock);
+            revalidate();  // Ensure the panel gets refreshed
+            repaint();     // Force a repaint of the panel to reflect updates
+        });
+    }
+
+    // Getters and setters for fields
+    public String[] getPlayerUsernames() { return playerUsernames; }
+    public void setPlayerUsernames(String[] playerUsernames) { this.playerUsernames = playerUsernames; updatePanel(); }
+    public int[] getPlayerScores() { return playerScores; }
+    public void setPlayerScores(int[] playerScores) { this.playerScores = playerScores; updatePanel(); }
+    public String[] getPlayerWands() { return playerWands; }
+    public void setPlayerWands(String[] playerWands) { this.playerWands = playerWands; updatePanel(); }
+    public String getCurrentPlayerTurn() { return currentPlayerTurn; }
+    public void setCurrentPlayerTurn(String currentPlayerTurn) { this.currentPlayerTurn = currentPlayerTurn; updatePanel(); }
+    public String getCurrentInstruction() { return currentInstruction; }
+    public void setCurrentInstruction(String currentInstruction) { this.currentInstruction = currentInstruction; updatePanel(); }
+    public String getCurrentBlock() { return currentBlock; }
+    public void setCurrentBlock(String currentBlock) { this.currentBlock = currentBlock; updatePanel(); }
+
+    // Getters and setters for button colors
+    public Color getLeftButtonColor() { return leftButtonColor; }
+    public void setLeftButtonColor(Color leftButtonColor) { this.leftButtonColor = leftButtonColor; updatePanel(); }
+
+    public Color getRightButtonColor() { return rightButtonColor; }
+    public void setRightButtonColor(Color rightButtonColor) { this.rightButtonColor = rightButtonColor; updatePanel(); }
+
+    public Color getButtonTextColor() { return buttonTextColor; }
+    public void setButtonTextColor(Color buttonTextColor) { this.buttonTextColor = buttonTextColor; updatePanel(); }
+
     private static void setButtonSize(JButton button, Dimension size) {
         button.setMinimumSize(size);
         button.setMaximumSize(size);

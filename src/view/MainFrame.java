@@ -38,7 +38,7 @@ public class MainFrame extends JFrame {
         // Combine user info, chat, and control panels in a left-side panel
         JPanel leftPanel = createLeftPanel(userInfoPanel, chatPanel, controlPanel, uiPrototype);
         splitPane.setLeftComponent(leftPanel);
-        splitPane.setRightComponent(mazePanel.createMazePanel(uiPrototype));
+        splitPane.setRightComponent(new MazePanel(uiPrototype));
 
         // Add split pane to frame
         add(splitPane, BorderLayout.CENTER);
@@ -55,8 +55,8 @@ public class MainFrame extends JFrame {
 
         // Add panels to the left panel
         leftPanel.add(userInfoPanel.createUserInfoPanel(uiPrototype));
-        leftPanel.add(chatPanel.createChatPanel(uiPrototype));
-        leftPanel.add(controlPanel.createActionButtonsPanel(uiPrototype));
+        leftPanel.add(new ChatPanel(uiPrototype));
+        leftPanel.add(new ControlPanel(uiPrototype));
         return leftPanel;
     }
 }

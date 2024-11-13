@@ -16,11 +16,12 @@ public class Main {
 //        ScoreManager scoreManagerModel = new ScoreManager();
 //        
 //        // Initialize views
+        UIPrototype uiPrototype = new UIPrototype();
         CardPanel cardPanel = new CardPanel();
-        ChatPanel chatPanel = new ChatPanel();
-        ControlPanel controlPanel = new ControlPanel();
+        ChatPanel chatPanel = new ChatPanel(uiPrototype);
+        ControlPanel controlPanel = new ControlPanel(uiPrototype);
         InfoPanel userInfoPanel = new InfoPanel();
-        MazePanel mazePanel = new MazePanel();
+        MazePanel mazePanel = new MazePanel(uiPrototype);
         MenuPanel menuPanel = new MenuPanel();
         
         // Initialize controllers with dependencies
@@ -36,7 +37,6 @@ public class Main {
 //        mazePanel.setGameController(gameController);  // MazePanel updates the game state via gameController
 
         // New MainFrame that incorporates all views
-        UIPrototype uiPrototype = new UIPrototype();
         MainFrame mainFrame = new MainFrame(cardPanel, chatPanel, controlPanel, userInfoPanel, mazePanel, menuPanel, uiPrototype);
         
 //        // Pass MainFrame to GameController (if it needs to update the entire UI)
