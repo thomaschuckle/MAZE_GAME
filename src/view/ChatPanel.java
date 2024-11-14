@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -16,60 +15,61 @@ import javax.swing.border.TitledBorder;
 public class ChatPanel extends JPanel {
     private static final long serialVersionUID = 1L;
 
-    private JTextArea chatArea;
-    private JTextField chatInputField;
+    private final JTextArea chatArea;
+    private final JTextField chatInputField;
+    private final JButton sendButton;
 
     // Constructor that accepts UIPrototype for setting dimensions
     public ChatPanel(UIPrototype uiPrototype) {
-        // Initialize components
+        // Panel layout and styling
         setLayout(new BorderLayout());
-
-        // Create the titled border with a white title
-        TitledBorder chatBorder = BorderFactory.createTitledBorder("Chat");
-        chatBorder.setTitleColor(Color.decode("#fc019c")); // Set title color
-        setBorder(chatBorder);
         setBackground(Color.decode("#014342")); // Set the background color
+        
+        // Create and set titled border with customized title color
+        TitledBorder chatBorder = BorderFactory.createTitledBorder("Chat");
+        chatBorder.setTitleColor(Color.decode("#fc019c")); 
+        setBorder(chatBorder);
 
-        // Use UIPrototype to set the dimensions of the chat panel
+        // Set preferred dimensions from UIPrototype
         setPreferredSize(new Dimension(uiPrototype.getChatDim()[0], uiPrototype.getChatDim()[1]));
 
-        // Create the chat area
+        // Initialize chat area
         chatArea = new JTextArea(5, 20);
         chatArea.setEditable(false);
-        chatArea.setBackground(Color.decode("#014342")); // Set chat area background color
-        chatArea.setForeground(Color.decode("#fc019c")); // Set text color
+        chatArea.setBackground(Color.decode("#014342")); 
+        chatArea.setForeground(Color.decode("#fc019c")); 
 
-        // Create the scroll pane for chat area
+        // Wrap chat area in a scroll pane and add to center
         JScrollPane chatScrollPane = new JScrollPane(chatArea);
-        chatScrollPane.setBackground(Color.decode("#013743")); // Set background color of scroll pane
+        chatScrollPane.setBackground(Color.decode("#013743")); 
         add(chatScrollPane, BorderLayout.CENTER);
 
-        // Create the input field for chat
+        // Initialize chat input field with styling
         chatInputField = new JTextField();
-        chatInputField.setBackground(Color.decode("#014342")); // Set input field background color
-        chatInputField.setForeground(Color.decode("#fc019c")); // Set text color
+        chatInputField.setBackground(Color.decode("#014342")); 
+        chatInputField.setForeground(Color.decode("#fc019c")); 
 
-        // Create the send button and set background color
-        JButton sendButton = new JButton("Send");
-        sendButton.setBackground(Color.decode("#4CAF50")); // Set button background color
-        sendButton.setForeground(Color.decode("#FFFFFF")); // Set button text color
+        // Initialize send button with styling
+        sendButton = new JButton("Send");
+        sendButton.setBackground(Color.decode("#4CAF50")); 
+        sendButton.setForeground(Color.decode("#FFFFFF")); 
 
-        // Create a panel for input and set background color
+        // Setup input panel, include input field and send button
         JPanel inputPanel = new JPanel(new BorderLayout());
-        inputPanel.setBackground(Color.decode("#013743")); // Set input panel background color
+        inputPanel.setBackground(Color.decode("#013743")); 
         inputPanel.add(chatInputField, BorderLayout.CENTER);
         inputPanel.add(sendButton, BorderLayout.EAST);
 
-        // Add the input panel to the chat panel
+        // Add the input panel to the bottom of the chat panel
         add(inputPanel, BorderLayout.SOUTH);
     }
 
-    // Update the chat area with the latest messages
+    // Update the chat area with new messages
     public void updateChatArea(String message) {
         chatArea.append(message + "\n");
     }
 
-    // Get the text from the input field
+    // Retrieve the text from the input field
     public String getChatInput() {
         return chatInputField.getText();
     }
@@ -79,10 +79,8 @@ public class ChatPanel extends JPanel {
         chatInputField.setText("");
     }
 
-    // Add an action listener to the send button
+    // Attach an action listener to the send button
     public void addSendButtonListener(ActionListener listener) {
-        // Get the send button from the panel and add the listener
-        JButton sendButton = (JButton) ((JPanel) getComponent(1)).getComponent(1);
         sendButton.addActionListener(listener);
     }
 }

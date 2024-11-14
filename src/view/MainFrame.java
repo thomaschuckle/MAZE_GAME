@@ -13,8 +13,26 @@ public class MainFrame extends JFrame {
 
     private static final long serialVersionUID = 1L;
 
+    // Fields for the components
+    private CardPanel cardPanel;
+    private ChatPanel chatPanel;
+    private ControlPanel controlPanel;
+    private InfoPanel userInfoPanel;
+    private MazePanel mazePanel;
+    private MenuPanel menuPanel;
+    private UIPrototype uiPrototype;
+
+    // Constructor to initialize the frame
     public MainFrame(CardPanel cardPanel, ChatPanel chatPanel, ControlPanel controlPanel,
                      InfoPanel userInfoPanel, MazePanel mazePanel, MenuPanel menuPanel, UIPrototype uiPrototype) {
+        
+        this.cardPanel = cardPanel;
+        this.chatPanel = chatPanel;
+        this.controlPanel = controlPanel;
+        this.userInfoPanel = userInfoPanel;
+        this.mazePanel = mazePanel;
+        this.menuPanel = menuPanel;
+        this.uiPrototype = uiPrototype;
         
         // Initialize main frame
         setTitle("Maze Game UI");
@@ -28,7 +46,7 @@ public class MainFrame extends JFrame {
         setIconImage(iconImage);
         
         // Set up menu bar (using the MenuPanel’s static method)
-        setJMenuBar(menuPanel.createMenuBar());
+        setJMenuBar(menuPanel.getMenuBar());
 
         // Create a split pane layout (15/85 proportion)
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -54,9 +72,66 @@ public class MainFrame extends JFrame {
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
 
         // Add panels to the left panel
-        leftPanel.add(userInfoPanel.createUserInfoPanel(uiPrototype));
-        leftPanel.add(new ChatPanel(uiPrototype));
-        leftPanel.add(new ControlPanel(uiPrototype));
+        leftPanel.add(userInfoPanel);
+        leftPanel.add(chatPanel);
+        leftPanel.add(controlPanel);
         return leftPanel;
+    }
+
+    // Getters and Setters
+    public CardPanel getCardPanel() {
+        return cardPanel;
+    }
+
+    public void setCardPanel(CardPanel cardPanel) {
+        this.cardPanel = cardPanel;
+    }
+
+    public ChatPanel getChatPanel() {
+        return chatPanel;
+    }
+
+    public void setChatPanel(ChatPanel chatPanel) {
+        this.chatPanel = chatPanel;
+    }
+
+    public ControlPanel getControlPanel() {
+        return controlPanel;
+    }
+
+    public void setControlPanel(ControlPanel controlPanel) {
+        this.controlPanel = controlPanel;
+    }
+
+    public InfoPanel getUserInfoPanel() {
+        return userInfoPanel;
+    }
+
+    public void setUserInfoPanel(InfoPanel userInfoPanel) {
+        this.userInfoPanel = userInfoPanel;
+    }
+
+    public MazePanel getMazePanel() {
+        return mazePanel;
+    }
+
+    public void setMazePanel(MazePanel mazePanel) {
+        this.mazePanel = mazePanel;
+    }
+
+    public MenuPanel getMenuPanel() {
+        return menuPanel;
+    }
+
+    public void setMenuPanel(MenuPanel menuPanel) {
+        this.menuPanel = menuPanel;
+    }
+
+    public UIPrototype getUiPrototype() {
+        return uiPrototype;
+    }
+
+    public void setUiPrototype(UIPrototype uiPrototype) {
+        this.uiPrototype = uiPrototype;
     }
 }

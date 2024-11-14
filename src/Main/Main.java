@@ -20,7 +20,7 @@ public class Main {
         CardPanel cardPanel = new CardPanel();
         ChatPanel chatPanel = new ChatPanel(uiPrototype);
         ControlPanel controlPanel = new ControlPanel(uiPrototype);
-        InfoPanel userInfoPanel = new InfoPanel();
+        InfoPanel userInfoPanel = new InfoPanel(uiPrototype);
         MazePanel mazePanel = new MazePanel(uiPrototype);
         MenuPanel menuPanel = new MenuPanel();
         

@@ -5,16 +5,14 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.border.TitledBorder;
-
 import javax.swing.SwingUtilities;
+import javax.swing.border.TitledBorder;
 
 public class InfoPanel extends JPanel {
     private static final long serialVersionUID = 1L;
@@ -38,36 +36,43 @@ public class InfoPanel extends JPanel {
     private Color rightButtonColor = Color.decode("#0b6e89"); // Default color for the right button
     private Color buttonTextColor = Color.WHITE;              // Default text color for buttons
 
-    // Initialize the panel and labels
-    public InfoPanel() {
+    // Constructor to initialize and build the panel, accepting uiPrototype
+    public InfoPanel(UIPrototype uiPrototype) {
+        // Initialize player info labels
         playerInfoLabels = new JLabel[playerUsernames.length];
-    }
 
-    public JPanel createUserInfoPanel(UIPrototype uiPrototype) {
+        // Set up the panel layout
+        setLayout(new BorderLayout());
+
+        // Create and set up the user info panel
         JPanel userInfoPanel = new JPanel(new BorderLayout());
-
         TitledBorder titledBorder = BorderFactory.createTitledBorder("User Info");
         titledBorder.setTitleColor(Color.decode("#d7bcac"));
         userInfoPanel.setBorder(titledBorder);
         userInfoPanel.setPreferredSize(new Dimension(uiPrototype.getPInfoDim()[0], uiPrototype.getPInfoDim()[1]));
         userInfoPanel.setBackground(Color.decode("#013743"));
 
+        // Panel for the player info labels
         JPanel labelsPanel = new JPanel();
         labelsPanel.setLayout(new BoxLayout(labelsPanel, BoxLayout.Y_AXIS));
         labelsPanel.setBackground(Color.decode("#013743"));
 
+        // Add the user turn label
         userTurnLabel = new JLabel(currentPlayerTurn + "'s TURN");
         userTurnLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         userTurnLabel.setForeground(Color.decode("#fb7f05"));
         labelsPanel.add(userTurnLabel);
 
+        // Add the instruction label
         instructionLabel = new JLabel(currentInstruction);
         instructionLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         instructionLabel.setForeground(Color.decode("#fb7f05"));
         labelsPanel.add(instructionLabel);
 
+        // Add vertical space
         labelsPanel.add(Box.createVerticalStrut(10));
 
+        // Add player info labels
         for (int i = 0; i < playerUsernames.length; i++) {
             playerInfoLabels[i] = new JLabel(playerUsernames[i] + ": " + playerScores[i] + " | " + playerWands[i]);
             playerInfoLabels[i].setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -75,49 +80,61 @@ public class InfoPanel extends JPanel {
             labelsPanel.add(playerInfoLabels[i]);
         }
 
+        // Add vertical space
         labelsPanel.add(Box.createVerticalStrut(10));
 
+        // Add current position label
         JLabel currentPosLabel = new JLabel("Current position to capture: ");
         currentPosLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         currentPosLabel.setForeground(Color.decode("#f62002"));
         labelsPanel.add(currentPosLabel);
 
+        // Add space
         labelsPanel.add(Box.createVerticalStrut(40));
 
+        // Panel for current block info and buttons
         JPanel labelsPanel2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         labelsPanel2.setBackground(Color.decode("#013743"));
 
+        // Add current block label
         currentBlockLabel = new JLabel(currentBlock);
         currentBlockLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         currentBlockLabel.setForeground(Color.decode("#ff7f00"));
         labelsPanel2.add(currentBlockLabel);
 
+        // Add a dummy panel for the block visualization (could be replaced later)
         JPanel currentBlockPanel = new JPanel();
         currentBlockPanel.setPreferredSize(new Dimension(60, 60));
         currentBlockPanel.setBorder(BorderFactory.createLineBorder(Color.RED));
         labelsPanel2.add(currentBlockPanel);
 
+        // Add space between buttons
         labelsPanel2.add(Box.createHorizontalStrut(1));
 
+        // Set up button size and add left button
         Dimension buttonSize = new Dimension(45, 20);
         JButton leftTurnButton = new JButton("<-");
         setButtonSize(leftTurnButton, buttonSize);
-        leftTurnButton.setBackground(leftButtonColor); // Uses default color if not set
-        leftTurnButton.setForeground(buttonTextColor); // Uses default text color if not set
+        leftTurnButton.setBackground(leftButtonColor);
+        leftTurnButton.setForeground(buttonTextColor);
         labelsPanel2.add(leftTurnButton);
 
+        // Add right button
         JButton rightTurnButton = new JButton("->");
         setButtonSize(rightTurnButton, buttonSize);
-        rightTurnButton.setBackground(rightButtonColor); // Uses default color if not set
-        rightTurnButton.setForeground(buttonTextColor); // Uses default text color if not set
+        rightTurnButton.setBackground(rightButtonColor);
+        rightTurnButton.setForeground(buttonTextColor);
         labelsPanel2.add(rightTurnButton);
 
+        // Add the panels to the user info panel
         userInfoPanel.add(labelsPanel, BorderLayout.NORTH);
         userInfoPanel.add(labelsPanel2, BorderLayout.CENTER);
 
-        labelsPanel.add(Box.createVerticalGlue());
+        // Add the user info panel to the main panel
+        add(userInfoPanel, BorderLayout.CENTER);
 
-        return userInfoPanel;
+        // Add space to the bottom of the panel
+        labelsPanel.add(Box.createVerticalGlue());
     }
 
     // Method to update the panel whenever fields are changed
@@ -131,8 +148,8 @@ public class InfoPanel extends JPanel {
             }
 
             currentBlockLabel.setText(currentBlock);
-            revalidate();  // Ensure the panel gets refreshed
-            repaint();     // Force a repaint of the panel to reflect updates
+            revalidate();
+            repaint();
         });
     }
 
