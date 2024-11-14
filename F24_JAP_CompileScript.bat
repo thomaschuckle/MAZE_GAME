@@ -29,7 +29,7 @@ ECHO "@                                                                   @"
 ECHO "@                   #       @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  @"
 ECHO "@                  ##       @  A L G O N Q U I N  C O L L E G E  @  @"
 ECHO "@                ##  #      @    JAVA APPLICATION PROGRAMMING    @  @"
-ECHO "@             ###    ##     @         F A L L  -  2 0 2 3        @  @"
+ECHO "@             ###    ##     @         F A L L  -  2 0 2 4        @  @"
 ECHO "@          ###    ##        @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  @"
 ECHO "@        ###    ##                                                  @"
 ECHO "@        ##    ###                 ###                              @"
@@ -49,8 +49,12 @@ ECHO "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
 
 ECHO "[LABS SCRIPT ---------------------]"
 
+:: MOVE ASSETS FOLDER TO BIN ..........................................
+ECHO "Moving Assets folder to bin directory..."
+move %LIBDIR% %BINDIR%\%LIBDIR% >nul
+
 ECHO "1. Compiling ......................"
-javac -Xlint -cp ".;%SRCDIR%;%LIBDIR%/*" %MAINCLASSSRC% -d %BINDIR% 2> %BINERR%
+javac -Xlint -cp ".;%SRCDIR%;%BINDIR%\%LIBDIR%/*" %MAINCLASSSRC% -d %BINDIR% 2> %BINERR%
 
 ECHO "2. Creating Jar ..................."
 cd %BINDIR%
@@ -58,11 +62,11 @@ jar cvfe %JARNAME% %MAINCLASSBIN% . > ../%JAROUT% 2> ../%JARERR%
 
 ECHO "3. Creating Javadoc ..............."
 cd ..
-javadoc -cp ".;%BINDIR%;../%LIBDIR%/*" --module-path "%LIBDIR%" -d %DOCDIR% -sourcepath %SRCDIR% -subpackages %DOCPACK% 2> %DOCERR%
+javadoc -cp ".;%BINDIR%;../%BINDIR%\%LIBDIR%/*" --module-path "%BINDIR%\%LIBDIR%" -d %DOCDIR% -sourcepath %SRCDIR% -subpackages %DOCPACK% 2> %DOCERR%
 
 cd %BINDIR%
 ECHO "4. Running Jar ...................."
-start java --module-path "../%LIBDIR%" -jar %JARNAME%
+start java --module-path "../%BINDIR%\%LIBDIR%" -jar %JARNAME%
 cd ..
 
 ECHO "[END OF SCRIPT -------------------]"
