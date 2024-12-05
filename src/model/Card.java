@@ -13,7 +13,8 @@ public class Card {
     private int[] recipe = new int[3];  // Array to store the recipe ingredients
 
     // Constructors ---------------------------------------------------------------------------------
-
+    public Card() {}
+    
     public Card(int ingredient1, int ingredient2, int ingredient3) {
         this.ingredient1 = ingredient1;
         this.ingredient2 = ingredient2;
